@@ -13,18 +13,20 @@ import Settings from "./components/Settings";
 import Modals from "./components/Modals";
 import Payslip from "./components/Payslip";
 
-// ✅ नया Employee Component इम्पोर्ट किया
+// ✅ Employee Component
 import EmployeeDashboard from "./components/EmployeeDashboard";
 
 function App() {
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [role, setRole] = useState("admin"); // 'admin' या 'employee'
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [pin, setPin] = useState("");
   const [empIdInput, setEmpIdInput] = useState(""); // Employee login के लिए
   const [currentEmp, setCurrentEmp] = useState(null); // Current logged-in Employee
 
-  // 🚨 [बदलाव १] मोबाइल साइडबार को खोलने और बंद करने के लिए ये स्टेट यहाँ जोड़ें
-  const [isOpen, setIsOpen] = useState(false); 
+  // मोबाइल साइडबार को खोलने और बंद करने के लिए ये स्टेट यहाँ जोड़ें
+  const [isOpen, setIsOpen] = useState(false); 
 
   const [view, setView] = useState("dash");
   const [activeEmpTab, setActiveEmpTab] = useState("ALL");
@@ -38,7 +40,7 @@ function App() {
   const [showAttMod, setShowAttMod] = useState(false);
   const [showSlipPrint, setShowSlipPrint] = useState(false);
 
-  const [empFormData, setEmpFormData] = useState({ id: "", name: "", dept: "", salary: "" });
+  const [empFormData, setEmpFormData] = useState({ id: "", name: "", dept: "", salary: "" , joiningDate: "" });
   const [leaveFormData, setLeaveFormData] = useState({ eid: "", reason: "", date: "" });
   const [printData, setPrintData] = useState(null);
 
@@ -93,7 +95,6 @@ function App() {
         setIsLoggedIn(true);
       } else alert("PIN is 123");
     } else {
-      // Employee Login via Emp ID
       const emp = db.e.find(x => x.empID.toLowerCase() === empIdInput.toLowerCase().trim());
       if (emp) {
         sessionStorage.setItem("auth", "employee");
@@ -114,16 +115,18 @@ function App() {
     setPin("");
     setEmpIdInput("");
     setView("dash");
-    setIsOpen(false); // लॉगआउट करते ही मोबाइल मेन्यू बंद हो जाए
+    setIsOpen(false); 
   };
 
   // --- ADMIN METHODS ---
   const openEmpModal = (id = null) => {
     if (id) {
       const e = db.e.find((x) => x.id === id);
-      setEmpFormData({ id: e.id, name: e.name, dept: e.dept, salary: e.salary });
+      // 📝 EDIT करते समय डेट भी स्टेट में आनी चाहिए
+      setEmpFormData({ id: e.id, name: e.name, dept: e.dept, salary: e.salary, joiningDate: e.joiningDate || "" });
     } else {
-      setEmpFormData({ id: "", name: "", dept: db.d[0] || "", salary: "" });
+      // ➕ NEW ADD करते समय 'joiningDate' भी खाली मिलनी चाहिए
+      setEmpFormData({ id: "", name: "", dept: db.d[0] || "", salary: "", joiningDate: "" });
     }
     setShowEmpMod(true);
   };
@@ -132,9 +135,24 @@ function App() {
     let updatedEmployees = [...db.e];
     if (empFormData.id) {
       const i = updatedEmployees.findIndex((x) => x.id === empFormData.id);
-      updatedEmployees[i] = { ...updatedEmployees[i], name: empFormData.name, dept: empFormData.dept, salary: Number(empFormData.salary) };
+      // 📝 EDIT को सेव करते समय भी डेट अपडेट हो
+      updatedEmployees[i] = { 
+        ...updatedEmployees[i], 
+        name: empFormData.name, 
+        dept: empFormData.dept, 
+        salary: Number(empFormData.salary),
+        joiningDate: empFormData.joiningDate // 👈 यहाँ बदलाव किया गया
+      };
     } else {
-      updatedEmployees.push({ id: Date.now(), empID: "KH" + Math.floor(100 + Math.random() * 900), name: empFormData.name, dept: empFormData.dept, salary: Number(empFormData.salary) });
+      // ➕ नए एम्प्लॉई को सेव करते समय 'joiningDate' भी एरे में जाएगी
+      updatedEmployees.push({ 
+        id: Date.now(), 
+        empID: "KH" + Math.floor(100 + Math.random() * 900), 
+        name: empFormData.name, 
+        dept: empFormData.dept, 
+        salary: Number(empFormData.salary),
+        joiningDate: empFormData.joiningDate // 👈 यहाँ बदलाव किया गया
+      });
     }
     setDb({ ...db, e: updatedEmployees });
     setShowEmpMod(false);
@@ -207,22 +225,26 @@ function App() {
   return (
     <div className="flex min-h-screen text-slate-900 bg-slate-50">
       
-       
+     {/* 1. Sidebar Component */}
       <Sidebar 
-        org={config.org} 
-        view={view} 
-        setView={setView} 
-        isOpen={isOpen} 
-        setIsOpen={setIsOpen} 
-        logout={logout} 
-        pendingLeavesCount={db.l.filter(leave => leave.status === 'pending').length}
-      />
+        org={config.org} 
+        view={view} 
+        setView={setView} 
+        logout={logout} 
+        pendingLeavesCount={db.l.filter(leave => leave.status === 'pending').length}
+        isOpen={isSidebarOpen}          
+        setIsOpen={setIsSidebarOpen}    
+      />
       
       <main className="flex-1 flex flex-col min-w-0">
-        
-       
-        <Header view={view} isOpen={isOpen} setIsOpen={setIsOpen} />
-        
+        
+        {/* 2. Header Component */}
+        <Header 
+          view={view} 
+          isOpen={isSidebarOpen}          
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+        />
+        
         <div className="p-4 md:p-6 lg:p-10">
           
           {view === 'dash' && <Dashboard totalStaff={db.e.length} lToday={lToday} totalPayroll={totalPayroll} cur={config.cur} />}

@@ -9,10 +9,10 @@ function Staff({ search, setSearch, openEmpModal, activeEmpTab, setActiveEmpTab,
     }
   };
 
-  // फिल्टर्ड डेटा को एक वेरिएबल में रख लिया ताकि बार-बार कोड न लिखना पड़े
-  const filteredStaff = db.e
-    .filter((e) => activeEmpTab === "ALL" || e.dept === activeEmpTab)
-    .filter((e) => e.name.toLowerCase().includes(search.toLowerCase()) || e.empID.toLowerCase().includes(search.toLowerCase()));
+  // फिल्टर्ड डेटा को एक वेरिएबल में रख लिया ताकि बार-बार कोड न लिखना पड़े
+  const filteredStaff = db.e
+    .filter((e) => activeEmpTab === "ALL" || e.dept === activeEmpTab)
+    .filter((e) => e.name.toLowerCase().includes(search.toLowerCase()) || e.empID.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -52,42 +52,52 @@ function Staff({ search, setSearch, openEmpModal, activeEmpTab, setActiveEmpTab,
       </div>
 
       {/* 📱 MOBILE VIEW: कार्ड्स लेआउट (डेस्कटॉप पर छुप जाएगा) */}
-      <div className="grid grid-cols-1 gap-4 lg:hidden">
-        {filteredStaff.map((e) => (
-          <div key={e.id} className="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
-            <div className="flex justify-between items-start">
+      <div className="grid grid-cols-1 gap-4 lg:hidden">
+        {filteredStaff.map((e) => (
+          <div key={e.id} className="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="font-bold text-slate-800 text-base">{e.name}</p>
+                <p className="text-[11px] font-black text-teal-600 uppercase mt-0.5">{e.empID}</p>
+              </div>
+              <span className="text-xs font-black uppercase px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">
+                {e.dept}
+              </span>
+            </div>
+            
+            {/* 🆕 मोबाइल में जॉइनिंग डेट का सेक्शन */}
+            <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
               <div>
-                <p className="font-bold text-slate-800 text-base">{e.name}</p>
-                <p className="text-[11px] font-black text-teal-600 uppercase mt-0.5">{e.empID}</p>
-              </div>
-              <span className="text-xs font-black uppercase px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">
-                {e.dept}
-              </span>
-            </div>
-            
-            <div className="flex justify-between items-center border-t border-slate-50 pt-3">
-              <div>
-                <span className="text-[10px] font-black text-slate-400 block uppercase">Basic Salary</span>
-                <span className="font-black text-slate-700 text-base">{cur}{e.salary.toLocaleString()}</span>
-              </div>
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => openEmpModal(e.id)} 
-                  className="bg-teal-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase shadow-sm"
-                >
-                  EDIT
-                </button>
-                <button 
-                  onClick={() => handleDelete(e.id, e.name)} 
-                  className="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase shadow-sm"
-                >
-                  DELETE
-                </button>
+                <span className="text-[10px] font-black text-slate-400 block uppercase">Joining Date</span>
+                <span className="font-bold text-slate-700 text-sm">
+                  {e.joiningDate ? e.joiningDate : "N/A"}
+                </span>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+
+            <div className="flex justify-between items-center border-t border-slate-50 pt-3">
+              <div>
+                <span className="text-[10px] font-black text-slate-400 block uppercase">Basic Salary</span>
+                <span className="font-black text-slate-700 text-base">{cur}{e.salary.toLocaleString()}</span>
+              </div>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => openEmpModal(e.id)} 
+                  className="bg-teal-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase shadow-sm"
+                >
+                  EDIT
+                </button>
+                <button 
+                  onClick={() => handleDelete(e.id, e.name)} 
+                  className="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase shadow-sm"
+                >
+                  DELETE
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* 💻 DESKTOP VIEW: टेबल लेआउट (मोबाइल पर छुप जाएगी) */}
       <div className="hidden lg:block bg-white rounded-[2rem] border shadow-sm overflow-hidden">
@@ -96,6 +106,7 @@ function Staff({ search, setSearch, openEmpModal, activeEmpTab, setActiveEmpTab,
             <tr>
               <th className="p-6">Employee Info</th>
               <th className="p-6">Department</th>
+              <th className="p-6">Joining Date</th>  
               <th className="p-6">Basic Salary</th>
               <th className="p-6 text-center">Actions</th>
             </tr>
@@ -114,6 +125,10 @@ function Staff({ search, setSearch, openEmpModal, activeEmpTab, setActiveEmpTab,
                     {e.dept}
                   </span>
                 </td>
+                {/* 🆕 डेस्कटॉप टेबल बॉडी में जॉइनिंग डेट */}
+                <td className="p-6 font-bold text-slate-600 text-sm">
+                  {e.joiningDate ? e.joiningDate : "N/A"}
+                </td>
                 <td className="p-6 font-black text-slate-700">
                   {cur}{e.salary.toLocaleString()}
                 </td>
@@ -139,13 +154,13 @@ function Staff({ search, setSearch, openEmpModal, activeEmpTab, setActiveEmpTab,
         </table>
       </div>
 
-      {/* No Results Fallback */}
-      {filteredStaff.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-[2rem] border shadow-sm">
-          <p className="text-xl font-bold text-slate-300">USER SLASH</p>
-          <p className="text-sm font-bold text-slate-400 mt-3">No staff members found.</p>
-        </div>
-      )}
+      {/* No Results Fallback */}
+      {filteredStaff.length === 0 && (
+        <div className="text-center py-16 bg-white rounded-[2rem] border shadow-sm">
+          <p className="text-xl font-bold text-slate-300">USER SLASH</p>
+          <p className="text-sm font-bold text-slate-400 mt-3">No staff members found.</p>
+        </div>
+      )}
     </div>
   );
 }

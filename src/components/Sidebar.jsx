@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-// 🆕 १. ऊपर props में pendingLeavesCount को रिसीव किया
-function Sidebar({ org, view, setView, logout, pendingLeavesCount }) {
-  const [isOpen, setIsOpen] = useState(false); // मोबाइल मेन्यू को खोलने/बंद करने के लिए
+// 🆕 १. ऊपर props में isOpen और setIsOpen को रिसीव किया
+function Sidebar({ org, view, setView, logout, pendingLeavesCount, isOpen, setIsOpen }) {
 
   const menuItems = [
     { id: "dash", name: "Dashboard", icon: "fa-chart-pie" },
@@ -17,15 +16,7 @@ function Sidebar({ org, view, setView, logout, pendingLeavesCount }) {
 
   return (
     <>
-      {/* 📱  Hamburger Button */}
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
-        className="lg:hidden absolute top-2.5 left-3 z-[200]   text-black p-3  focus:outline-none flex items-center justify-center w-10 h-10 hover:bg-teal-700 transition-colors"
-      >
-        <i className={`fas ${isOpen ? 'fa-times text-white ' : 'fa-bars'} text-base`}></i>
-      </button>
-
-      {/* 🌑   */}
+      {/* 🌑 डार्क ओवरले: मोबाइल पर बैकग्राउंड धुंधला करने के लिए */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[140] lg:hidden"
@@ -39,7 +30,7 @@ function Sidebar({ org, view, setView, logout, pendingLeavesCount }) {
       }`}>
         
         {/* 🏢 Top Logo Section */}
-        <div className="flex justify-between items-center mb-10 px-4 mt-12 lg:mt-0">
+        <div className="flex justify-between items-center mb-10 px-4 mt-4 lg:mt-0">
           <h2 className="text-2xl font-black italic text-teal-400 tracking-wide">{org}</h2>
         </div>
 
@@ -56,18 +47,18 @@ function Sidebar({ org, view, setView, logout, pendingLeavesCount }) {
                 view === item.id ? "bg-teal-600 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"
               }`}
             >
-              {/* लेफ्ट साइड: आइकॉन और नाम */}
-              <div className="flex items-center gap-3">
-                <i className={`fas ${item.icon} text-sm w-5`}></i>
-                <span className="text-xs font-black uppercase tracking-wider">{item.name}</span>
-              </div>
+              {/* लेफ्ट साइड: आइकॉन और नाम */}
+              <div className="flex items-center gap-3">
+                <i className={`fas ${item.icon} text-sm w-5`}></i>
+                <span className="text-xs font-black uppercase tracking-wider">{item.name}</span>
+              </div>
 
-              {/* 🔴 🆕 राइट साइड: अगर ये 'Leaves' का बटन है और पेंडिंग काउंट 0 से बड़ा है, तो काउंट दिखेगा */}
-              {item.id === 'leave' && pendingLeavesCount > 0 && (
-                <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md animate-pulse">
-                  {pendingLeavesCount}
-                </span>
-              )}
+              {/* 🔴 राइट साइड: लीव्स काउंट */}
+              {item.id === 'leave' && pendingLeavesCount > 0 && (
+                <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md animate-pulse">
+                  {pendingLeavesCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
