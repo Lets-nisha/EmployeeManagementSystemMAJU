@@ -12,6 +12,7 @@ function Sidebar({ org, view, setView, logout, pendingLeavesCount, isOpen, setIs
     { id: "rep", name: "Reports", icon: "fa-file-contract" },
     { id: "sal", name: "Salary", icon: "fa-wallet" },
     { id: "set", name: "Settings", icon: "fa-cog" },
+  { id: "bin", name: "bin", icon: "fa-trash" },
   ];
 
   return (

@@ -173,9 +173,9 @@ function TableViews({ view, setShowLeaveMod, db, setDb, today, setSelId, setShow
                 onChange={(e) => setFilterType(e.target.value)} 
                 className="p-4 bg-white border rounded-2xl font-bold w-full outline-none shadow-sm focus:border-teal-500 transition-colors"
               >
-                <option value="day">By Day (दैनिक)</option>
-                <option value="month">By Month (मासिक)</option>
-                <option value="year">By Year (वार्षिक)</option>
+                <option value="day">By Day  </option>
+                <option value="month">By Month  </option>
+                <option value="year">By Year </option>
               </select>
             </div>
 

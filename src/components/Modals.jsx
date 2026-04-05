@@ -37,7 +37,7 @@ function Modals({
           <input type="number" value={empFormData.salary} onChange={(e) => setEmpFormData({ ...empFormData, salary: e.target.value })} className="w-full p-4 bg-slate-50 border rounded-2xl outline-none font-bold" />
         </div>
         
-        {/* 🆕 यहाँ पर जॉइनिंग डेट का इनपुट जोड़ा गया है */}
+        
         <div>
           <label className="text-xs font-black uppercase text-slate-400 block mb-1">Joining Date</label>
           <input 
