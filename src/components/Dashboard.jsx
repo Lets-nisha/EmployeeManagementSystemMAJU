@@ -1,10 +1,7 @@
 import React from 'react';
 
 function Dashboard({ totalStaff, lToday, totalPayroll, cur }) {
-  
-  // 🧠 डमी डेटा (इसे आप बाद में असली API डेटा से बदल सकती हैं)
-  const efficiency = 87; // कंपनी 87% परफेक्ट चल रही है
-  const salaryBurnRate = 34; // 34% सैलरी पर खर्च हो रहा है (रिस्क कम है)
+ 
 
   return (
     <div className="space-y-8 animate-fadeIn pb-10">
@@ -115,76 +112,7 @@ function Dashboard({ totalStaff, lToday, totalPayroll, cur }) {
         </div>
       </div>
 
-      {/* 🚀 🆕 [नया सेक्शन] Company Health & Trends (पानी में है या परफेक्ट) */}
-      <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all mt-8">
-        <div className="mb-6">
-          <h5 className="text-sm font-black uppercase text-slate-700 tracking-wide">Company Health Status</h5>
-          <p className="text-xs text-slate-400 font-bold">Real-time stability and growth index</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          {/* मीटर १: कंपनी कितनी परफेक्ट है (Efficiency) */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-black text-slate-600 uppercase">⚡ Workspace Perfection Meter</span>
-              <span className="text-sm font-black text-emerald-600">{efficiency}%</span>
-            </div>
-            <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-1000"
-                style={{ width: `${efficiency}%` }}
-              ></div>
-            </div>
-            <div className="text-xs font-bold text-slate-400 flex items-center gap-1">
-              <i className="fas fa-check-circle text-emerald-500"></i> High efficiency: Tasks and staff are perfectly balanced.
-            </div>
-          </div>
-
-          {/* मीटर २: कंपनी कितने पानी में है (Burn Rate / Financial Risk) */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-black text-slate-600 uppercase">💧 Financial   Meter (Risk)</span>
-              <span className="text-sm font-black text-amber-600">{salaryBurnRate}%</span>
-            </div>
-            <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 rounded-full transition-all duration-1000"
-                style={{ width: `${salaryBurnRate}%` }}
-              ></div>
-            </div>
-            <div className="text-xs font-bold text-slate-400 flex items-center gap-1">
-              <i className="fas fa-shield-halved text-emerald-500"></i> Under Safe Zone: The company is generating good profit.
-            </div>
-          </div>
-
-        </div>
-
-        {/* क्विक ओवरव्यू ट्रेंड्स */}
-        <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-emerald-50 rounded-xl text-emerald-600"><i className="fas fa-arrow-up-right-dots text-sm"></i></div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase">Growth Rate</p>
-              <p className="text-sm font-black text-slate-700">+23.5%</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-rose-50 rounded-xl text-rose-600"><i className="fas fa-arrow-down-wide-short text-sm"></i></div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase">Employee Attrition</p>
-              <p className="text-sm font-black text-slate-700">-4.2%</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-teal-50 rounded-xl text-teal-600"><i className="fas fa-bolt text-sm"></i></div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase">Project Success</p>
-              <p className="text-sm font-black text-slate-700">92%</p>
-            </div>
-          </div>
-        </div>
-      </div>
+       
 
     </div>
   );

@@ -17,6 +17,9 @@ import Payslip from "./components/Payslip";
 import EmployeeDashboard from "./components/EmployeeDashboard";
 import RecycleBin from "./components/RecycleBin"; // 👈 यहाँ मैंने फाइल का नाम RecycleBin रखा है जो आपके Bin.jsx से आ रहा है
 
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShieldCheck, UserCircle, LayoutDashboard, Send } from 'lucide-react';
+
 function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +30,7 @@ function App() {
   const [currentEmp, setCurrentEmp] = useState(null); // Current logged-in Employee
 
   // मोबाइल साइडबार को खोलने और बंद करने के लिए ये स्टेट यहाँ जोड़ें
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
 
   const [view, setView] = useState("dash");
   const [activeEmpTab, setActiveEmpTab] = useState("ALL");
@@ -41,7 +44,7 @@ function App() {
   const [showAttMod, setShowAttMod] = useState(false);
   const [showSlipPrint, setShowSlipPrint] = useState(false);
 
-  const [empFormData, setEmpFormData] = useState({ id: "", name: "", dept: "", salary: "" , joiningDate: "" });
+  const [empFormData, setEmpFormData] = useState({ id: "", name: "", dept: "", salary: "", joiningDate: "" });
   const [leaveFormData, setLeaveFormData] = useState({ eid: "", reason: "", date: "" });
   const [printData, setPrintData] = useState(null);
 
@@ -58,7 +61,7 @@ function App() {
 
   useEffect(() => { localStorage.setItem("ems_db", JSON.stringify(db)); }, [db]);
   useEffect(() => { localStorage.setItem("ems_config", JSON.stringify(config)); }, [config]);
-  
+
   useEffect(() => {
     if (sessionStorage.getItem("auth") === "admin") setIsLoggedIn(true);
     if (sessionStorage.getItem("auth") === "employee") {
@@ -117,7 +120,7 @@ function App() {
     setPin("");
     setEmpIdInput("");
     setView("dash");
-    setIsOpen(false); 
+    setIsOpen(false);
   };
 
   // --- ADMIN METHODS ---
@@ -137,23 +140,23 @@ function App() {
     let updatedEmployees = [...db.e];
     if (empFormData.id) {
       const i = updatedEmployees.findIndex((x) => x.id === empFormData.id);
-      
-      updatedEmployees[i] = { 
-        ...updatedEmployees[i], 
-        name: empFormData.name, 
-        dept: empFormData.dept, 
+
+      updatedEmployees[i] = {
+        ...updatedEmployees[i],
+        name: empFormData.name,
+        dept: empFormData.dept,
         salary: Number(empFormData.salary),
-        joiningDate: empFormData.joiningDate   
+        joiningDate: empFormData.joiningDate
       };
     } else {
-        
-      updatedEmployees.push({ 
-        id: Date.now(), 
-        empID: "KH" + Math.floor(100 + Math.random() * 900), 
-        name: empFormData.name, 
-        dept: empFormData.dept, 
+
+      updatedEmployees.push({
+        id: Date.now(),
+        empID: "KH" + Math.floor(100 + Math.random() * 900),
+        name: empFormData.name,
+        dept: empFormData.dept,
         salary: Number(empFormData.salary),
-        joiningDate: empFormData.joiningDate  
+        joiningDate: empFormData.joiningDate
       });
     }
     setDb({ ...db, e: updatedEmployees });
@@ -161,14 +164,14 @@ function App() {
   };
 
   // 🗑️ १. डिलीट करने पर डेटा रीसायकल बिन (Trash) में जाएगा
-  const deleteEmp = (id) => { 
+  const deleteEmp = (id) => {
     const empToDelete = db.e.find((x) => x.id === id);
     if (empToDelete) {
-      setDb({ 
-        ...db, 
+      setDb({
+        ...db,
         e: db.e.filter((x) => x.id !== id),
         trash: [...(db.trash || []), empToDelete]
-      }); 
+      });
     }
   };
 
@@ -179,7 +182,7 @@ function App() {
       setDb({
         ...db,
         trash: db.trash.filter((x) => x.id !== id),
-        e: [...db.e, empToRestore] 
+        e: [...db.e, empToRestore]
       });
     }
   };
@@ -224,27 +227,103 @@ function App() {
   // --- LOGIN SCREEN JSX ---
   if (!isLoggedIn) {
     return (
-      <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="bg-white p-8 md:p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl text-center">
-          
-          {/* Role Selector */}
-          <div className="flex bg-slate-100 p-1.5 rounded-2xl mb-8">
-            <button onClick={() => setRole("admin")} className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${role === 'admin' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-500'}`}>ADMIN</button>
-            <button onClick={() => setRole("employee")} className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${role === 'employee' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-500'}`}>EMPLOYEE</button>
+      <div className="fixed inset-0 bg-[#0f172a] flex flex-col items-center justify-center p-4 overflow-hidden">
+
+        {/* Background Decor: EMS Professional Feel */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-teal-500/10 blur-[120px] rounded-full animate-pulse"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full"></div>
+
+          {/* Abstract Grid Pattern */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{ backgroundImage: `radial-gradient(#fff 1px, transparent 1px)`, backgroundSize: '30px 30px' }}>
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: -200 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10 w-full max-w-md"
+        >
+          <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] text-center border border-white/20">
+
+            {/* Top Icon Area */}
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-teal-50 flex items-center justify-center rounded-2xl text-teal-600 transition-transform duration-500 hover:rotate-12">
+                {role === 'admin' ? <ShieldCheck size={32} /> : <UserCircle size={32} />}
+              </div>
+            </div>
+
+            {/* Role Selector with Sliding Animation */}
+            <div className="flex bg-slate-100 p-1.5 rounded-2xl mb-8 relative">
+              <button
+                onClick={() => setRole("admin")}
+                className={`flex-1 py-3 text-sm font-black rounded-xl z-10 transition-colors duration-300 ${role === 'admin' ? 'text-teal-600' : 'text-slate-500'}`}
+              >
+                ADMIN
+              </button>
+              <button
+                onClick={() => setRole("employee")}
+                className={`flex-1 py-3 text-sm font-black rounded-xl z-10 transition-colors duration-300 ${role === 'employee' ? 'text-teal-600' : 'text-slate-500'}`}
+              >
+                EMPLOYEE
+              </button>
+
+              {/* Animated Background Slider */}
+              <motion.div
+                className="absolute top-1.5 bottom-1.5 left-1.5 bg-white shadow-md rounded-xl"
+                animate={{ x: role === 'admin' ? '0%' : '100%' }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                initial={false}
+                style={{ width: 'calc(50% - 6px)' }}
+              />
+            </div>
+
+            {/* Form Content with Transition */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={role}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h1 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tight">
+                  {role === "admin" ? "Management Control" : "Staff Portal"}
+                </h1>
+
+                {role === "admin" ? (
+                  <input
+                    type="password"
+                    placeholder="Enter Admin PIN (123)"
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value)}
+                    className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl mb-6 outline-none text-center font-bold focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    placeholder="Emp ID (Ex: KH982)"
+                    value={empIdInput}
+                    onChange={(e) => setEmpIdInput(e.target.value)}
+                    className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl mb-6 outline-none text-center font-bold focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Login Button with Hover Animation */}
+            <button
+              onClick={doLogin}
+              className="w-full group relative overflow-hidden bg-teal-600 text-white p-4 rounded-2xl font-black transition-all hover:bg-teal-700 active:scale-95 flex items-center justify-center gap-2"
+            >
+              <LayoutDashboard size={20} className="group-hover:rotate-12 transition-transform" />
+              SECURE LOGIN
+            </button>
           </div>
 
-          <h1 className="text-2xl font-black text-slate-800 mb-6 uppercase tracking-tight">
-            {role === "admin" ? "Admin Control Panel" : "Staff Portal"}
-          </h1>
-
-          {role === "admin" ? (
-            <input type="password" placeholder="Enter PIN (123)" value={pin} onChange={(e) => setPin(e.target.value)} className="w-full p-4 bg-slate-50 border rounded-2xl mb-6 outline-none text-center font-bold" />
-          ) : (
-            <input type="text" placeholder="Enter Emp ID (Ex: KH982)" value={empIdInput} onChange={(e) => setEmpIdInput(e.target.value)} className="w-full p-4 bg-slate-50 border rounded-2xl mb-6 outline-none text-center font-bold" />
-          )}
-
-          <button onClick={doLogin} className="w-full bg-teal-600 text-white p-4 rounded-2xl font-black hover:bg-teal-700 transition-colors">LOGIN</button>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -257,29 +336,29 @@ function App() {
   // --- RENDER ADMIN VIEW ---
   return (
     <div className="flex min-h-screen text-slate-900 bg-slate-50">
-      
-     {/* 1. Sidebar Component */}
-      <Sidebar 
-        org={config.org} 
-        view={view} 
-        setView={setView} 
-        logout={logout} 
+
+      {/* 1. Sidebar Component */}
+      <Sidebar
+        org={config.org}
+        view={view}
+        setView={setView}
+        logout={logout}
         pendingLeavesCount={db.l.filter(leave => leave.status === 'pending').length}
-        isOpen={isSidebarOpen}          
-        setIsOpen={setIsSidebarOpen}    
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
       />
-      
+
       <main className="flex-1 flex flex-col min-w-0">
-        
+
         {/* 2. Header Component */}
-        <Header 
-          view={view} 
-          isOpen={isSidebarOpen}          
-          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+        <Header
+          view={view}
+          isOpen={isSidebarOpen}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
-        
+
         <div className="p-4 md:p-6 lg:p-10">
-          
+
           {view === 'dash' && <Dashboard totalStaff={db.e.length} lToday={lToday} totalPayroll={totalPayroll} cur={config.cur} />}
           {view === 'emp' && <Staff search={search} setSearch={setSearch} openEmpModal={openEmpModal} activeEmpTab={activeEmpTab} setActiveEmpTab={setActiveEmpTab} db={db} cur={config.cur} deleteEmp={deleteEmp} />}
           {view === 'dept' && <Departments newDeptName={newDeptName} setNewDeptName={setNewDeptName} saveDept={saveDept} db={db} deleteDept={deleteDept} />}
@@ -294,7 +373,7 @@ function App() {
 
       <Modals showEmpMod={showEmpMod} setShowEmpMod={setShowEmpMod} empFormData={empFormData} setEmpFormData={setEmpFormData} db={db} saveEmp={saveEmp} showLeaveMod={showLeaveMod} setShowLeaveMod={setShowLeaveMod} leaveFormData={leaveFormData} setLeaveFormData={setLeaveFormData} saveLeave={saveLeave} showAttMod={showAttMod} setShowAttMod={setShowAttMod} markAttendance={markAttendance} />
       <Payslip showSlipPrint={showSlipPrint} printData={printData} setShowSlipPrint={setShowSlipPrint} config={config} triggerPrint={triggerPrint} />
- </div>
+    </div>
   );
 }
 

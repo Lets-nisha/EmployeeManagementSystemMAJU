@@ -7,8 +7,7 @@ function Modals({
 }) {
   return (
     <>
-      {/* 1. Employee Modal */}
-    {/* ADD/EDIT EMPLOYEE MODAL */}
+   
 {showEmpMod && (
   <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[200]">
     <div className="bg-white p-6 md:p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl relative animate-fadeIn">
